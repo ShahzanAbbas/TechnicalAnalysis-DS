@@ -1,6 +1,6 @@
 ---
 title: "BDA400 Assignment 2 - Technical Analysis using R (Preliminary Stage)"
-author: "[Your Name]"
+author: "Devinder Sandhu"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
   html_document:
