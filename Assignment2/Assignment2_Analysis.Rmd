@@ -1,0 +1,98 @@
+---
+title: "BDA400 Assignment 2 - Technical Analysis using R (Preliminary Stage)"
+author: "[Your Name]"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
+                      fig.width = 9, fig.height = 5)
+source("stock_functions.R")
+source("display_utils.R")
+```
+
+# Portfolio
+
+The stock symbols are read from `portfolio.txt` (one symbol per line).
+
+```{r portfolio}
+symbols <- read_portfolio("portfolio.txt")
+symbols
+```
+
+# Importing the Stock Data
+
+`load_stock_data()` downloads one year of daily prices from Yahoo Finance
+with `quantmod::getSymbols()` and stores each stock as its own data frame.
+
+```{r load}
+stocks <- load_stock_data("portfolio.txt",
+                          from = Sys.Date() - 365, to = Sys.Date())
+sapply(stocks, nrow)
+```
+
+## Preview of the data
+
+```{r preview, results='asis'}
+for (sym in names(stocks)) {
+  print(knitr::kable(tail(stocks[[sym]], 5), digits = 2,
+                     caption = paste(sym, "- last 5 trading days")))
+  cat("\n")
+}
+```
+
+## Quote summary (Yahoo Finance style)
+
+```{r quotes}
+for (sym in names(stocks)) display_quote_summary(stocks[[sym]], sym)
+```
+
+# Basic Statistics
+
+Statistics are calculated on the daily **Close** price: mean, median,
+mode (prices rounded to whole dollars), standard deviation and the
+20-day simple moving average (SMA).
+
+```{r stats}
+stats <- calculate_all_statistics(stocks, column = "Close", ma_window = 20)
+display_statistics(stats$table)
+```
+
+# Visualizations
+
+## Closing price with 20-day moving average
+
+```{r ma-plots}
+for (sym in names(stocks)) {
+  plot_price_with_ma(stats$by_stock[[sym]], sym, 20)
+}
+```
+
+## Candlestick charts (last 90 days)
+
+```{r candles}
+for (sym in names(stocks)) {
+  plot_candlestick(stocks[[sym]], sym, 20)
+}
+```
+
+## Comparing the portfolio
+
+```{r compare}
+plot_normalized_comparison(stocks)
+plot_statistics_bar(stats$table)
+```
+
+# Notes
+
+* The mode is not very meaningful for continuous price data, so the prices
+  were rounded to whole dollars before finding the most frequent value.
+* RY.TO and SHOP.TO are listed on the TSX, so their prices are in CAD while
+  the other stocks are in USD.
+* This is stage 1 of 3; the saved data will be reused for the technical
+  indicators in the next assignment.
