@@ -132,18 +132,24 @@ plot_normalized_comparison <- function(stock_list) {
   })
 
   y_range <- range(unlist(lapply(normalized, function(d) d$Index)))
-  x_range <- range(do.call(c, lapply(normalized, function(d) d$Date)))
+  # NOTE: do.call(c, ...) on a named list drops the Date class and gives
+  # plain numbers (days since 1970), so the axis showed 20500, 20600...
+  # unname() + as.Date() keeps them as real dates.
+  x_range <- as.Date(range(do.call(c, unname(lapply(normalized, function(d) d$Date)))))
   cols <- rainbow(length(normalized))
 
-  plot(NULL, xlim = x_range, ylim = y_range,
+  # plot the first stock with type = "n" so R draws a proper date axis
+  plot(normalized[[1]]$Date, normalized[[1]]$Index, type = "n",
+       xlim = x_range, ylim = y_range,
        main = "Portfolio Performance (rebased to 100)",
        xlab = "Date", ylab = "Index (start = 100)")
   abline(h = 100, lty = 2, col = "grey")
   for (i in seq_along(normalized)) {
     lines(normalized[[i]]$Date, normalized[[i]]$Index, col = cols[i], lwd = 1.5)
   }
-  legend("topleft", legend = names(normalized), col = cols, lwd = 2,
-         bty = "n", cex = 0.8)
+  # legend in 4 columns at the bottom so it doesn't cover the lines
+  legend("bottomleft", legend = names(normalized), col = cols, lwd = 2,
+         ncol = 4, bg = "white", cex = 0.75)
 }
 
 
