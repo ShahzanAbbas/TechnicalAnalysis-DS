@@ -5,9 +5,8 @@ The project is a 3-stage stock technical analysis project written in R.
 
 | Folder | Contents |
 |---|---|
-| `Assignment1/` | Assignment 1 |
 | `Assignment2/` | Technical Analysis using R – Preliminary Stage |
-| `Assignment3/` | (coming soon) |
+| `Assignment3/` | (next stage, coming soon) |
 
 ## Assignment 2 files
 
@@ -17,7 +16,7 @@ The project is a 3-stage stock technical analysis project written in R.
 - `display_utils.R` – functions to display the data, statistics and charts
 - `main.R` – runs everything
 - `Assignment2_Analysis.Rmd` – R Markdown version with output and charts
-- `BDA400_A02_Report.docx` – report with screenshots
+- `DevinderSandhu_BDA400_A02.docx` – report with screenshots
 
 ## How to run
 
